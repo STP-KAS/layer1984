@@ -1,5 +1,9 @@
 # Grok Build Prompt — layer1984: Kaspa Privacy Overlay / Hardware-Gated Extra Layer of the Internet
 
+Delusional level: 10 out of 10. A drafted idea. Nothing more.
+
+The answer is in [README.md](README.md). The sourced note is [EVALUATION.md](EVALUATION.md).
+
 **Objective**
 Design and critically evaluate a practical architecture for a Tor-like (but faster and stronger) “extra layer of the internet” that runs on Kaspa. Platforms such as 1984 (sixpack.wtf) should be able to operate on it. Access should be gated by specialized hardware the user must possess. Prioritize maximum privacy and self-sovereignty. Start with a realistic Testnet-10 proof-of-concept that can later move toward mainnet. Use everything known about current and near-future Kaspa capabilities. Push back hard if the idea is fundamentally flawed or if better alternatives exist.
 
@@ -63,4 +67,4 @@ After research, explicitly state what is already possible today vs. what require
 Take the time to browse primary sources. Cite everything. Do not invent capabilities. Prefer working with what Kaspa and OpenMiner already provide.
 
 ---
-Repo: https://github.com/STP-KAS/layer1984 (private)
+Repo: https://github.com/STP-KAS/layer1984

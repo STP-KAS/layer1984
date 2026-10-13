@@ -1,12 +1,20 @@
-# layer1984 evaluation
+# layer1984
+
+Delusional level: 10 out of 10. A drafted idea. Nothing more.
+
+Intentions are good. The thought process is questionable. This note is an experiment. It is not advice. Sorry for the time.
 
 Date: 13 Oct 2026.
-Author: Grok Build, from the brief in `GROK-BUILD-PROMPT.md`.
+Author: Fermi. The sources and the arithmetic follow the brief in `GROK-BUILD-PROMPT.md`.
 Scope: what Kaspa and OpenMiner can actually do, and what a hardware-gated "extra layer of the internet" would have to be if it is going to be real.
 
 This note does not add a token, a covenant, or a miner image. It does not speak for Kaspa core, for Luke Dunshea, or for Olaf Weller.
 
-## 1. Research summary
+The short page is [README.md](README.md).
+
+## What
+
+The draft asks for a Tor-like layer that runs on Kaspa, opens when the user holds a miner, and can host a site such as 1984. The record below is what those pieces already are.
 
 ### What is already live
 
@@ -159,7 +167,9 @@ Not available:
 - An open access appliance built from a Kaspa ASIC. OpenMiner's stage 3 is a hope, and the chips he has opened are a 3 kW KS5 and a 400 W KA Box, not a KS0 Ultra.
 - Any opcode, lane, or miner protocol whose job is "this person owns a box, so route their packets."
 
-## 2. Feasibility verdict
+## Why
+
+The draft fails where it asks Kaspa to carry the session and a miner to open the door.
 
 The extra layer, as a faster and stronger Tor that runs on Kaspa and opens when a miner is in the path, is not feasible.
 
@@ -172,7 +182,31 @@ The part that is feasible, and already mostly exists, is smaller:
 - A key that lives on that computer is the access check, if a check is wanted.
 - Private KAS, if it arrives, arrives through the Kaspa Privacy Initiative or a design of the same kind. This repo should not start a second one.
 
-## 3. Recommended architecture
+These are the limits that bind the idea.
+
+**The device ends the LAN session.** The path in the brief is internet, then router, then the hardware, then the user. A session that terminates on that hardware is visible to it: destination, timing, and size. End-to-end encryption keeps the body confidential. The device still holds the session metadata. A closed controller, or a host the user cannot inspect, records that metadata. The hash chip returns nonces. The host software is what sees the traffic.
+
+**Filtering happens on the link in front of the box.** An ISP can drop the Kaspa peer port, the pool port, and the public Tor directory. Tor bridges and pluggable transports exist because that directory is blockable. A block subsidy is paid on a peer connection that has already succeeded.
+
+**Throughput and confirmation answer different questions.** Tor carries one user's bytes at relay speed. Its published limit is correlation by a watcher who sees both ends of the circuit (Dingledine, Mathewson, Syverson, 2004). Kaspa carries transactions in blocks of about 125 KB, ten times a second: about 1.25 MB/s when the entire mass budget is bytes. A session at one megabit per second is larger than that network-wide ceiling. One small transaction still confirms on the order of a second. Economic finality is a further depth of the DAG. Those times describe a payment or an app operation inside the mass limit. A stream of web bytes placed in payloads is public to every indexer and spends the block budget.
+
+**Mining writes public links.** A solo block records a coinbase address. A pool session records the worker's IP and the shares. A payload is stored in full for every indexer. A privacy design counts those links, or it keeps the hasher off the access path.
+
+**A home miner's output is its own subsidy.** At about 363 PH/s, a 400 GH/s box expects about one block a day out of 864,000. At the September 2026 subsidy of 2.182 KAS per block, that is on the order of 2 KAS before power, plus whatever fee was already inside the block it found. Fee bids in every other block are set by the people who sent those transactions. A login check that accepts hashrate admits anyone who can rent that hashrate. The owner is locked out while the box is off, and in the gap between blocks.
+
+**OpenMiner's evidence ends at the stock board.** The 1 Oct 2026 post sets three stages: document the chip, control miners people already own, and later explore new boards. Reference tree `478de854` shows UART control of a KS5 Pro hashboard and SPI control of a stock-prepared KA Box. Package pins, rails, and a new board stay open on both chips. The IEN616 driver remains in a private repository. The post is the primary source for that measured control and for that roadmap. A board sold as an access appliance is later work.
+
+**Shielded native KAS already has a public research track.** Weller's initiative is native KAS, with no new token, and with no protocol marked final. Sutton wrote on 13 Oct 2026 that the based-bridge shape fits that work. A second shielded pool in this repo repeats an unfinished circuit and splits the reviewers. The 1984 OLAF note reports `proof: false` and `zk: false`. Describing that note as the initiative publishes a false privacy claim.
+
+**Ten blocks a second changes how covenant state is laid out.** The docs use that rate so many independent UTXOs can move together. Sutton describes a run of small responsive programs. The Kaspa account describes app updates carried beside payments. Each of those lives inside the block mass limit. The byte stream of a user session stays on the transport plane.
+
+**Real funds stay out.** KPI gives the same instruction for their own code. The mass measurement and any later trial run on Testnet-10.
+
+## How
+
+Three planes, a Testnet-10 check that stops after two measurements, and the hardware that check actually needs.
+
+### Planes
 
 Do not build a packet overlay on Kaspa. Build three separate planes, and only build the one this project can actually finish.
 
@@ -200,17 +234,17 @@ The machine should be the same one that runs the Kaspa node, because that is the
 
 **Nodes.** Full node on the user's computer for anything that is supposed to be private. Light client plus somebody else's node is acceptable for a Testnet-10 demo and publishes the demo to that somebody.
 
-## 4. Concrete Testnet-10 POC
+### Testnet-10 check
 
 One pass, play money, no new token, no packet tunnel, no second privacy protocol, no new kaspad process if this desk already has one.
 
-1. Keep this evaluation in the private repo. Do not put it on the public 1984 page.
+1. Leave this note in this repository. Leave it off the 1984 square.
 2. Offline access check. Generate a key on one machine, sign a random challenge, verify the signature in a second process. Write down what the verifier learns: a public key, and the IP of whatever connection delivered the signature. That IP line is the entire reason the transport plane is Tor.
 3. One mass measurement, read-only against the existing Testnet-10 node, a single transaction built and not sprayed. Try payloads of 1 KB, 10 KB, and 50 KB. Record compute mass, transient mass, and the standardness rejection at 100,000 grams. Publish the numbers next to the 125 KB block ceiling so the "we will carry traffic later" sentence has a measurement under it.
 4. Watch KPI's Based App trial. The trial they described on 13 Oct 2026 is the right experiment: lane order, execution, settlement, a deliberate omission, reconstruction by someone else. Do not fork it and do not start the shielded circuit in this repo.
 5. Stop. A passing signature test plus a mass table is the POC. A miner image, a custom board, and a mainnet gate are out of scope.
 
-## 5. Hardware recommendation
+### Hardware
 
 Use a small computer the user can open, and run the Testnet-10 node there. That computer holds the access key. Any current PC that already runs rusty-kaspa meets this bar. A quiet single-board computer is enough for a node and a signature check. It is the access device.
 
@@ -226,7 +260,7 @@ If the separate goal is "own the miner," follow OpenMiner in the order Dunshea p
 
 A secure element would be required before "possession" means more than "a file on a disk." OpenMiner does not provide one. A copied key is a copied user. Say that in the product, or do not say "hardware-gated."
 
-## 6. Open questions
+### Open questions
 
 - Confirm the `api.kaspa.org` hashrate unit against one pool's published petahash figure on the day a miner is actually measured. The block-rate table scales with that number. The verdict does not.
 - Does any KA Box controller have the RAM and the thermal margin to run rusty-kaspa next to the miner process? The reference does not say. Measure before claiming it.
@@ -236,26 +270,17 @@ A secure element would be required before "possession" means more than "a file o
 - Who would manufacture a secure element, and under what audit? Until that has a name, the access key is a software key.
 - Kloak's node tree was not readable at the URL given in January 2026. If the project publishes again, read the code before describing it as available.
 
-## 7. Pushback
+## Conclusion
 
-These are the limits that bind the idea.
+The drafted layer, read as a faster and stronger Tor that runs on Kaspa and opens when a miner is in the path, does not fit the chain or the hardware.
 
-**The device ends the LAN session.** The path in the brief is internet, then router, then the hardware, then the user. A session that terminates on that hardware is visible to it: destination, timing, and size. End-to-end encryption keeps the body confidential. The device still holds the session metadata. A closed controller, or a host the user cannot inspect, records that metadata. The hash chip returns nonces. The host software is what sees the traffic.
+What can be finished is already separate:
 
-**Filtering happens on the link in front of the box.** An ISP can drop the Kaspa peer port, the pool port, and the public Tor directory. Tor bridges and pluggable transports exist because that directory is blockable. A block subsidy is paid on a peer connection that has already succeeded.
+- The site stays a normal service. An onion service is the door when the operator wants the server address off the public web.
+- The user runs their own Kaspa node on a computer they control.
+- A key on that computer is the access check, when a check is wanted.
+- Native KAS is the money. Shielded KAS, if it arrives, arrives through the Kaspa Privacy Initiative. This repo starts no second pool.
 
-**Throughput and confirmation answer different questions.** Tor carries one user's bytes at relay speed. Its published limit is correlation by a watcher who sees both ends of the circuit (Dingledine, Mathewson, Syverson, 2004). Kaspa carries transactions in blocks of about 125 KB, ten times a second: about 1.25 MB/s when the entire mass budget is bytes. A session at one megabit per second is larger than that network-wide ceiling. One small transaction still confirms on the order of a second. Economic finality is a further depth of the DAG. Those times describe a payment or an app operation inside the mass limit. A stream of web bytes placed in payloads is public to every indexer and spends the block budget.
+This repository is a public draft of that reading. The 1984 square stays a square: a raw idea, links to other people's work, and Kaspa core as a separate project. The sentence beside that square, when one is wanted, is an onion service for the door, a local node for the money, and a key on that machine for the gate.
 
-**Mining writes public links.** A solo block records a coinbase address. A pool session records the worker's IP and the shares. A payload is stored in full for every indexer. A privacy design counts those links, or it keeps the hasher off the access path.
-
-**A home miner's output is its own subsidy.** At about 363 PH/s, a 400 GH/s box expects about one block a day out of 864,000. At the September 2026 subsidy of 2.182 KAS per block, that is on the order of 2 KAS before power, plus whatever fee was already inside the block it found. Fee bids in every other block are set by the people who sent those transactions. A login check that accepts hashrate admits anyone who can rent that hashrate. The owner is locked out while the box is off, and in the gap between blocks.
-
-**OpenMiner's evidence ends at the stock board.** The 1 Oct 2026 post sets three stages: document the chip, control miners people already own, and later explore new boards. Reference tree `478de854` shows UART control of a KS5 Pro hashboard and SPI control of a stock-prepared KA Box. Package pins, rails, and a new board stay open on both chips. The IEN616 driver remains in a private repository. The post is the primary source for that measured control and for that roadmap. A board sold as an access appliance is later work.
-
-**Shielded native KAS already has a public research track.** Weller's initiative is native KAS, with no new token, and with no protocol marked final. Sutton wrote on 13 Oct 2026 that the based-bridge shape fits that work. A second shielded pool in this repo repeats an unfinished circuit and splits the reviewers. The 1984 OLAF note reports `proof: false` and `zk: false`. Describing that note as the initiative publishes a false privacy claim.
-
-**Ten blocks a second changes how covenant state is laid out.** The docs use that rate so many independent UTXOs can move together. Sutton describes a run of small responsive programs. The Kaspa account describes app updates carried beside payments. Each of those lives inside the block mass limit. The byte stream of a user session stays on the transport plane.
-
-**This repo stays private.** The public 1984 page already says the square is a raw idea, the links are other people's work, and Kaspa core is a separate project. The sentence that matches this evaluation, when one is wanted beside that page, is an onion service for the door, a local node for the money, and a key on that machine for the gate.
-
-**Real funds stay out.** KPI gives the same instruction for their own code. The mass measurement and any later trial run on Testnet-10.
+Real funds stay on Testnet-10. The mass measurement and any later trial use play money. The Kaspa Privacy Initiative gives the same instruction for its own code.
